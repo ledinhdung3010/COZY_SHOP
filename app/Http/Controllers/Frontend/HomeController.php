@@ -19,7 +19,11 @@ class HomeController extends FrontendController
         // $total=Cart::total();
         // $countCart=$cart->count();
         $keyword=$request->query('s');
+        if($keyword=='undefined'){
+            $keyword="";
+        }
         $category=Category::all();
+
         $tag=Tag::where('type',config('common.type.tag_product'))->get();
         $color=Color::all();
         $products=Product::select('products.*','categories.name as category_name','categories.slug as category_slug')
@@ -27,7 +31,7 @@ class HomeController extends FrontendController
         ->where(function($query) use ($keyword){
             $query->where('products.name','like',"%{$keyword}%");
             $query->orwhere('products.description','like',"%{$keyword}%");
-        });
+        })->orderBy('id','desc');
        
         $formPrice=$request->from_price;
         $toPrice=$request->to_price;
@@ -77,14 +81,19 @@ class HomeController extends FrontendController
         }
         
         $dataProduct=$products->paginate(config('common.panigator.item_perpage'));
-        return view('frontend.home.index',
-        [
-            'categories'=>$category,
-            'products'=>$dataProduct,
-            'keyword'=>$keyword,
-            'tags'=>$tag,
-            'colors'=>$color
-        ]
-    );
+        return response()->json(
+            [
+                'categories'=>$category,
+                'products'=>$dataProduct,
+                'keyword'=>$keyword,
+                'tags'=>$tag,
+                'colors'=>$color
+               
+            ]
+        );
+    }
+    public function viewIndex(){
+        return view('frontend.home.index');
     }
 }
+

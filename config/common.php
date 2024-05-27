@@ -1,7 +1,7 @@
 <?php
 return [
     'panigator'=>[
-        'item_perpage'=>2,
+        'item_perpage'=>3,
         'releted_product'=>[
             'skip'=>0,
             'take'=>8

@@ -1,0 +1,1 @@
+<a href="{{route('admin.login.emailreset',['id'=>$id,'code'=>$token_resetpassword])}}">Click de dat lai mat khau</a>

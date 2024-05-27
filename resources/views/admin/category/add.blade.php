@@ -28,7 +28,7 @@
                 </ul>
             </div>
         @endif
-        <form action="" class="border p-3" method="post" enctype="multipart/form-data">
+        <form action="{{route('admin.category.create')}}" class="border p-3" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-sm-12 col-md-6">

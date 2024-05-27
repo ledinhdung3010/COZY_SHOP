@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class CheckAdminLogin
 {
@@ -15,11 +17,14 @@ class CheckAdminLogin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $sessionUsername=$request->session()->get('username');
-        if(empty($sessionUsername)){
-            return redirect()->route('admin.login');
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if (!$user) {
+                return response()->json(['status' => 'User not found'], 404);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['status' => 'Token is invalid'], 401);
         }
-        // cho phep chay cac routing khac
         return $next($request);
     }
 }

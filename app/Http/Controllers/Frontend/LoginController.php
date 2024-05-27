@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginPostRequest;
 use Illuminate\Http\Request;
 use App\Models\Account;
+use App\Models\Role;
 
 class LoginController extends Controller
 {
@@ -13,22 +14,35 @@ class LoginController extends Controller
         return view ('frontend.login.index');
     }
     public function handle(LoginPostRequest $request){
-        $username=$request->input('username');
-       $password =$request->input('password');
-       $infoUser=Account::
-                        where([
-                            'username'=>$username,
-                            'password'=>$password
-                            ])->first();
-     
-        if(!empty($infoUser)){
-            $request->session()->put('id',$infoUser->id);
-            $request->session()->put('user',$infoUser->username);
-            $request->session()->put('email',$infoUser->email);
-            $request->session()->put('role_id',$infoUser->rides_id);
-            return redirect()->route('frontend.home');
+        $credentials = request(['username', 'password']);
+
+        if (! $token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Tai khoan hoac mat khau sai'], 401);
         }else{
-            return redirect()->back()->with('error_login','tai khoan khong ton tai');
+            $user=auth()->user()->role_id;
+            $role=Role::find($user);
+            if($role->name=="admin"){
+                return response()->json([
+                    'code'=>200,
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
+                    'user'=>auth()->user(),
+                    'role'=>'admin'
+                ]);
+            }else{
+                return response()->json([
+                    'code'=>200,
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
+                    'user'=>auth()->user(),
+                    'role'=>'user'
+                ]);
+            }
         }
+
+        
+       
     }
 }

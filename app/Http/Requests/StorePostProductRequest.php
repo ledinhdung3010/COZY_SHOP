@@ -24,16 +24,16 @@ class StorePostProductRequest extends FormRequest
     {
         return [
             'name'=>'required|min:2|max:150',
-            'category_id'=>'required|numeric',
+            'category'=>'required|numeric',
             'description'=>'required',
-            'price'=>['numeric','required',new SalePriceValidate],
+            'price'=>['required','numeric',new SalePriceValidate],
             'list_image'=>['required','max:2048'],
             'list_image.*'=>'mimes:jpg,png,svg',
             'quantity'=>'required|numeric',
             'status'=>'required',
-            'color_id'=>'required',
-            'size_id'=>'required',
-            'tag_id'=>'required'
+            'color'=>'required',
+            'size'=>'required',
+            'tag'=>'required'
             
 
         ];
@@ -43,8 +43,8 @@ class StorePostProductRequest extends FormRequest
             'name.required'=>'ten khong duoc de trong',
             'name.min'=>'ten khong duoc be hon 2 ky tu',
             'name.max'=>'ten khong duoc vuot qua 150 ky tu',
-            'category_id.required'=>"vui long chon danh muc",
-            'category_id.numeric'=>"Du lieu khong chinh xac",
+            'category.required'=>"vui long chon danh muc",
+            'category.numeric'=>"Du lieu khong chinh xac",
             'description.required'=>'mo ta san pham khong duoc de trong',
             'price.required'=>'vui long nhap gia san pham',
             'price.numeric'=>'gia san pham phai la so',
@@ -54,9 +54,9 @@ class StorePostProductRequest extends FormRequest
             'quantity.required'=>'vui long so luong san pham',
             'quantity.numeric'=>'so luong san pham phai la so',
             'status.required'=>'vui long nhap trang thai',
-            'color_id.required'=>'vui long chon color',
-            'size_id.required'=>'vui long chon size',
-            'tag_id.required'=>'vui long chon tag'
+            'color.required'=>'vui long chon color',
+            'size.required'=>'vui long chon size',
+            'tag.required'=>'vui long chon tag'
 
         ];
        

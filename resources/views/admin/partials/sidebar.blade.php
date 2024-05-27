@@ -32,7 +32,7 @@
               <svg class="nav-icon">
                 <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
               </svg>Categories</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">
+              <li class="nav-item"><a class="nav-link" href="{{route('admin.tag')}}">
                 <svg class="nav-icon">
                   <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
                 </svg>Tags</a></li>
@@ -44,6 +44,15 @@
                 <svg class="nav-icon">
                   <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
                 </svg>Products</a></li>
+              <li class="nav-title">Statistical</li>
+              <li class="nav-item"><a class="nav-link" href="{{route('admin.charts.quantity')}}">
+                <svg class="nav-icon">
+                  <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
+                </svg>By product quantity</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{route('admin.charts.amount')}}">
+                <svg class="nav-icon">
+                  <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
+                </svg>By amount</a></li>
  
           </ul>
          

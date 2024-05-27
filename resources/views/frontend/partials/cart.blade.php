@@ -26,7 +26,7 @@
                             </a>
 
                             <span class="header-cart-item-info"  data-product-id="{{$item->id.''.$item->options->size.''.$item->options->color}}">
-                                {{$item->price.'          X           '.$item->qty}} 
+                                {{$item->options->price_sell.'          X           '.$item->qty}} 
                             </span>
                         </div>
                     </li>

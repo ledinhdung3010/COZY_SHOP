@@ -75,7 +75,7 @@
                         <td>{{$color->code}}</td>
                         <td>{{$color->slug}}</td>
                         <td>
-                            <a href="#" class="btn btn-info btn-sm">view</a>
+                            <a href="" class="btn btn-info btn-sm">view</a>
                         </td>
                         <td>
                             <a href="{{route('admin.color.edit',['id'=>$color->id])}}" class="btn btn-info btn-sm">edit</a>

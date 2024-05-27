@@ -70,7 +70,7 @@
                     <tr>
                         <td>{{$item->id}}</td>
                         <td>{{$item->name}}</td>
-                        <td>{{$item->icon}}</td>
+                        <td><img src="{{URL::to('/')}}/upload/images/category/{{$item->icon}}" width="10%" alt=""></td>
                         <td>
                             <a href="#" class="btn btn-info btn-sm">view</a>
                         </td>

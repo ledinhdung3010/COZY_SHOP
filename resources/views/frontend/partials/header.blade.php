@@ -24,6 +24,9 @@
                     <a href="#" class="flex-c-m trans-04 p-lr-25">
                         USD
                     </a>
+                    <a href="#" class="flex-c-m trans-04 p-lr-25">
+                        
+                    </a>
                 </div>
             </div>
         </div>
@@ -40,7 +43,7 @@
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
-                            <a href="{{route('frontend.home')}}">Home</a>
+                            <a href="{{route('frontend.home.index')}}">Home</a>
                         </li>
                         <li>
                             <a href="{{route('frontend.blog')}}">Blog</a>

@@ -14,7 +14,11 @@ class FrontendController extends Controller
     {
         $this->middleware(function ($request, $next) {
             $carts = Cart::content();
-            $cartTotal = Cart::total();
+            $cartTotal=0;
+            foreach ($carts as $cartItem) {
+                $priceSell = $cartItem->options->price_sell ?? $cartItem->price; // Fallback to the original price if price_sell is not set
+                $cartTotal += $priceSell * $cartItem->qty;
+            }
             $itemCarts = $carts->count();
             View::share('data', [
                 'cart' => $carts,

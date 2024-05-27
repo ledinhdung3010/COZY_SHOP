@@ -25,7 +25,8 @@ class StorePostCustomerPayment extends FormRequest
             'full_name'=>'required',
             'phone'=>'required|numeric',
             'email'=>'required|email',
-            'address'=>'required'
+            'address'=>'required',
+            'pay'=>'required'
         ];
     }
     public function messages(){
@@ -35,7 +36,8 @@ class StorePostCustomerPayment extends FormRequest
             'phone.numeric'=>'so dien thoai phai la so',
             'email.required'=>'email khong duoc de trong',
             'email.email'=>'dinh dang email sai',
-            'address.required'=>'vui long nhap dia chi giao hang'
+            'address.required'=>'vui long nhap dia chi giao hang',
+            'pay.required'=>'vui long chon phuong thuc thanh toan'
 
         ];
     }

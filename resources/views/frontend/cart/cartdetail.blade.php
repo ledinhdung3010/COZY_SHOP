@@ -39,7 +39,7 @@
 										</div>
 									</td>
 									<td class="column-2"><a href="{{route('frontend.product.detail',['slug'=>$item->options->slug,'id'=>$item->id])}}">{{$item->name}}</a></td>
-									<td class="column-3">{{'$'.$item->price}}</td>
+									<td class="column-3">{{'$'.$item->price_sell}}</td>
 									<td class="column-4">
 										<div class="wrap-num-product flex-w m-l-auto m-r-0">
 											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" data-id="{{$item->rowId}}">
@@ -187,7 +187,7 @@
 							var updateCart=$(cartItemSelector)
 							if(result.qty>0){
 								console.log(updateCart);
-								updateCart.text(result.price+'          X           '+result.qty);
+								updateCart.text(result.price_sell+'          X           '+result.qty);
 							}
 							if(num==0){
 								$('.header-cart-item[data-id="'+idPd+ '"]').remove();

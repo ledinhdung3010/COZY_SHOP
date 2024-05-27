@@ -32,6 +32,8 @@
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="{{asset('admin/assets/favicon/ms-icon-144x144.png')}}">
         <meta name="theme-color" content="#ffffff">
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
         <!-- Vendors styles-->
         <link rel="stylesheet" href="{{asset('admin/vendors/simplebar/css/simplebar.css')}}">
         <link rel="stylesheet" href="{{asset('admin/css/vendors/simplebar.css')}}">
@@ -40,6 +42,10 @@
         <!-- We use those styles to show code examples, you should remove them in your application.-->
         <link href="{{asset('admin/css/examples.css')}}" rel="stylesheet">
         <link href="{{asset('admin/vendors/@coreui/chartjs/css/coreui-chartjs.css')}}" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('frontend/fonts/linearicons-v1.0.0/icon-font.min.css')}}">
+
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         @stack('stylesheets')
       </head>
       <body>
@@ -51,7 +57,9 @@
                 @yield('content')
             </div>
           </div>
+         
          @include('admin.partials.footer')
+        
         </div>
         <!-- CoreUI and necessary plugins-->
         <script src="{{asset('admin/vendors/@coreui/coreui/js/coreui.bundle.min.js')}}"></script>
@@ -62,6 +70,8 @@
         <script src="{{asset('admin/vendors/@coreui/utils/js/coreui-utils.js')}}"></script>
         {{-- <script src="{{asset('admin/js/main.js')}}"></script> --}}
         <script src="{{asset('admin/js/jquery-3.7.1.min.js')}}"></script>
+        
+        
         @stack('javascript')
     
       </body>

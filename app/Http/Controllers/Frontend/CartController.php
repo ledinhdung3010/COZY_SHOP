@@ -65,15 +65,19 @@ class CartController extends Controller
                                     'color'=>$nameColor,
                                     'image'=>$product->image,
                                     'user'=>session()->get('user'),
-                                    'slug'=>$product->slug
+                                    'slug'=>$product->slug,
+                                    'price_sell'=>$product->price_sell
                                    
                         ]
                     ]
                 );
-                $item->tax=0;
-                $cart=Cart::content()->where('options.user',session()->get('user'));
+                $cartTotal=0;
+                $cart=Cart::content();
                 $count=$cart->count();
-                $total=Cart::total();
+                foreach ($cart as $cartItem) {
+                    $priceSell = $cartItem->options->price_sell ?? $cartItem->price; // Fallback to the original price if price_sell is not set
+                    $cartTotal += $priceSell * $cartItem->qty;
+                }
             return response()->json(
                 [
                     'cod'=>200,
@@ -81,7 +85,7 @@ class CartController extends Controller
                     'error'=>null,
                     'count'=>$count,
                     'lastCart'=>$item,
-                    'total'=>$total
+                    'total'=>$cartTotal
                 ]
             );
             }
@@ -100,11 +104,15 @@ class CartController extends Controller
     public function delete(Request $request){
         $id=$request->id;
         Cart::remove($id);
-        $total=Cart::total();
-        $cart=Cart::content()->where('options.user',session()->get('user'));
+        $cart=Cart::content();
         $count=$cart->count();
+        $cartTotal=0;
+        foreach ($cart as $cartItem) {
+            $priceSell = $cartItem->options->price_sell ?? $cartItem->price; // Fallback to the original price if price_sell is not set
+            $cartTotal += $priceSell * $cartItem->qty;
+        }
         return response()->json([
-            'total'=>$total,
+            'total'=>$cartTotal,
             'count'=>$count
         ]);
     }

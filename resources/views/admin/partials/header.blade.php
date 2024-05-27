@@ -10,7 +10,7 @@
         </svg></a>
       <ul class="header-nav d-none d-md-flex">
         <li class="nav-item">
-          <a href="#" class="nav-link">HI:{{Session::get('username')}}</a>
+          <a href="#" class="nav-link">HI: <span class="username"></span></a>
         </li>
         {{-- <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
@@ -32,7 +32,7 @@
       </ul>
       <ul class="header-nav ms-3">
         <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <div class="avatar avatar-md"><img class="avatar-img" src="assets/img/avatars/8.jpg" alt="user@email.com"></div>
+            <div class="avatar avatar-md"><img class="avatar-img" src="" alt="user@email.com"></div>
           </a>
           <div class="dropdown-menu dropdown-menu-end pt-0">
             <div class="dropdown-header bg-light py-2">
@@ -69,14 +69,18 @@
               <svg class="icon me-2">
                 <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-lock-locked"></use>
               </svg> Lock Account</a>
-              <form action="{{route('admin.logout')}}" method="post">
-                @csrf
-                <button class="dropdown-item" type="submit">
+              <div class="dropdown-divider"></div><a class="dropdown-item" href="{{route('admin.changepassword')}}">
+                <svg class="icon me-2">
+                  <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-lock-locked"></use>
+                </svg>Change Password</a>
+            
+              
+                <button class="dropdown-item" type="submit" id="log_out">
                   <svg class="icon me-2">
                     <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-account-logout"></use>
                   </svg> Logout
                 </button>
-              </form>
+            
               
           </div>
         </li>
@@ -94,3 +98,50 @@
       </nav>
     </div>
   </header>
+  @push('javascript')
+  <script>
+      $(document).ready(function(){
+        $.ajax({
+                url:'http://127.0.0.1:8000/admin/checkTimeToken',
+                type:'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                },
+                success: function(response) {
+                  
+                },
+                error: function(xhr) {
+                      if (xhr.status == 401) {
+                        localStorage.clear();
+                        window.location.href = 'http://127.0.0.1:8000/admin/login';
+                      }
+                }
+          })
+        var username = localStorage.getItem('username');
+        var avatar = localStorage.getItem('avatar');
+        var avatar_gg = localStorage.getItem('avatar_gg');
+        if(avatar_gg){
+          $(".avatar-img").attr("src",avatar_gg);
+        }else{
+          $(".avatar-img").attr("src", '{{URL::to('/')}}/upload/images/user/'+avatar+'');
+        }
+          $('.username').text(username)
+         
+      });
+      $('#log_out').click(function(event){
+        event.preventDefault();
+        console.log(localStorage.getItem('jwt_token'));
+        $.ajax({
+                type:'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                },
+                url:'http://127.0.0.1:8000/admin/logout',
+                success: function(response) {
+                  localStorage.clear();
+                  window.location.href = 'http://127.0.0.1:8000/admin/login';
+                }
+          })
+      })
+  </script>
+@endpush

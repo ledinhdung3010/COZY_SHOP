@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostProductRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Comment;
 use App\Models\ProductSize;
 use App\Models\ProductTag;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class ProductController extends Controller
   public function index(Request $request)
   {
     $keyword = $request->query('s');
-    $product = Product::where('name', 'LIKE', "%{$keyword}%")->orderBy('id','desc')->paginate(2);
+    $product = Product::where('name', 'LIKE', "%{$keyword}%")->orderBy('id','desc')->paginate(5);
     return view('admin.product.index', ['products' => $product, 'keyword' => $keyword]);
   }
   public function add()
@@ -52,24 +53,39 @@ class ProductController extends Controller
         'sale_price.numeric' => 'gia khuyen mai phai la so'
       ]);
       if ($validator->fails()) {
-        return redirect()->route('admin.product.add')->withErrors($validator)->withInput();
+        return response()->json(
+          [
+            'errors'=>$validator->errors()
+          ],422
+        );
+        
       }
       $price = $request->input('price');
       $salePrice = $request->input('sale_price');
       if ($salePrice > $price) {
-        return redirect()->back()->with('error_sale--price', 'gia sale nho hon gia goc')->withInput();
+        return response()->json(
+          [
+            'code'=>422,
+            'error_sale_price'=>'Gia sale phai nho hon gia goc'
+          ]
+        );
       }
     }
     $arrayImg = [];
     if ($request->hasFile('list_image')) {
       foreach ($request->file('list_image') as $img) {
-        $nameImg = $img->getClientOriginalName();
+        $nameImg = time().$img->getClientOriginalName();
         $img->move(public_path('upload/images/product'), $nameImg);
         $arrayImg[] = $nameImg;
       }
 
       if (empty($arrayImg)) {
-        return redirect()->back()->withErrors('error_upload_img', 'khong the upload anh')->withInput();
+        return response()->json(
+          [
+            'code'=>422,
+            'error_img'=>'Khong the tai anh len'
+          ]
+        );
       }
     }
     // tien hanh insert vao sql
@@ -77,7 +93,7 @@ class ProductController extends Controller
     $slug = CommonHelper::slugVietnamese($request->name);
     $product = new Product;
     $product->name = $request->name;
-    $product->categories_id = $request->category_id;
+    $product->categories_id = $request->category;
     $product->slug = $slug;
     $product->description = ($request->description);
     $product->summary = $request->summary;
@@ -91,7 +107,7 @@ class ProductController extends Controller
     $product->save();
     $lastInsertProduct = $product->id;
     if (is_numeric($lastInsertProduct) && $lastInsertProduct > 0) {
-      $arrColorId = $request->color_id;
+      $arrColorId = $request->color;
       $dataProductColor = [];
       if (is_array($arrColorId) && !empty($arrColorId)) {
         foreach ($arrColorId as $color_id) {
@@ -104,7 +120,7 @@ class ProductController extends Controller
         if (!empty($dataProductColor)) {
           ProductColor::insert($dataProductColor);
         }
-        $arrSizeId = $request->size_id;
+        $arrSizeId = $request->size;
         $dataProductSize = [];
         if (is_array($arrSizeId) && !empty($arrSizeId)) {
           foreach ($arrSizeId as $size_id) {
@@ -117,7 +133,7 @@ class ProductController extends Controller
           if (!empty($dataProductSize)) {
             ProductSize::insert($dataProductSize);
           }
-          $arrTagId = $request->tag_id;
+          $arrTagId = $request->tag;
           $dataProductTag = [];
           if (is_array($arrTagId) && !empty($arrTagId)) {
             foreach ($arrTagId as $tag_id) {
@@ -130,10 +146,20 @@ class ProductController extends Controller
             if (!empty($dataProductTag)) {
               ProductTag::insert($dataProductTag);
             }
-            return redirect()->route('admin.product')->with('insert_success', 'insert success');
           }
+          return response()->json(
+            [
+              
+              'message'=>'insert success'
+            ],200
+          );
         } else {
-          return redirect()->back()->with('error_insert--product', 'insert product fail');
+          return response()->json(
+            [
+              
+              'message'=>'insert product fail'
+            ],500
+          );
         }
       }
 
@@ -145,7 +171,17 @@ class ProductController extends Controller
     $infoPD = Product::find($idProduct);
     if (!empty($infoPD)) {
       $infoPD->delete(); // tu update deleted_at ma khong xoa du lieu\
-      return redirect()->back()->with('delete_success', 'delete success');
+      return response()->json(
+        [
+          'message'=>'delete success'
+        ],200
+      );
+    }else{
+      return response()->json(
+        [
+          'message'=>'delete fail'
+        ],422
+      );
     }
 
   }
@@ -347,4 +383,79 @@ class ProductController extends Controller
     }
 
   }
+  public function deletes(Request $request){
+    $idProducts=$request->idProducts;
+    if(!empty($idProducts)){
+      foreach($idProducts  as $id){
+        $infoPD = Product::find($id);
+        if(!empty($infoPD)){
+          $infoPD->delete();
+        }
+      }
+      return response()->json(
+        [
+          'message'=>'delete success'
+        ],200
+      );
+    }else{
+      return response()->json(
+        [
+          'message'=>'delete fail'
+        ],422
+      );
+    }
+  }
+  public function view(){
+    return view('admin.product.view');
+
+  }
+  public function renderProduct(Request $request){
+    $id=$request->id;
+    if($id){
+      $comment=Comment::where('productId',$id)->get();
+      return response()->json(
+        [
+          'comment'=>$comment
+        ],200
+      );
+    }else{
+      return response()->json(
+        [
+          'error'=>'Khong tim thay san pham'
+        ],500
+      );
+    }
+   
+  }
+  public function repComment(Request $request){
+    $id=$request->idPd;
+    $content=$request->content;
+    if($id){
+      Comment::where('id',$id)->update(['partend_id'=>auth()->user()->id,'repComment'=>$content]);
+      $comment=Comment::find($id);
+      return response()->json(
+        [
+          'comment'=>$comment
+        ],200
+      );
+    }
+  }
+  public function deleteComment(Request $request){
+    $id=$request->idPd;
+    if($id){
+      $comment=Comment::find($id);
+      $comment->delete();
+      return response()->json(
+        [
+          'message'=>'delete success'
+        ],200
+      );
+    }else{
+      return response()->json(
+        [
+          'error'=>'delete fail'
+        ],500
+      );
+    }
+  } 
 }

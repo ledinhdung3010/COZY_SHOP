@@ -22,7 +22,7 @@
                             <p>{{Session::get('error_login')}}</p>
                         </div>
                     @endif
-                <form action="{{route('frontend.handle.login')}}" method="post">
+                <form  method="post" id="inf_login">
                     <div class="input-group mb-3"><span class="input-group-text">
                         @csrf
                         <svg class="icon">
@@ -38,7 +38,7 @@
                     </div>
                     <div class="row">
                     <div class="col-6">
-                        <button class="btn btn-primary px-4" type="submit">Login</button>
+                        <button class="btn btn-primary px-4 btn-submit" type="submit">Login</button>
                     </div>
                     </div>
 
@@ -50,3 +50,26 @@
         </div>
   </div>
   @endsection
+  @push('javascript')
+      <script>
+        $('.btn-submit').click(function(event){
+            event.preventDefault();
+            var formData = $('#inf_login').serialize();
+            $.ajax({
+                            url:"http://127.0.0.1:8000/handle-login",
+                            type:"Post",
+                            data:formData,
+                            success:function(data,textStatus,xhr){
+                               if(xhr.status==200&&data.role=="user"){
+                                localStorage.setItem('jwt_token', data.access_token);
+                                window.location.href="http://127.0.0.1:8000/home/index?page=1"
+                               }
+                            },
+                            error: function(xhr) {
+                                
+                            }
+                    })
+                
+        })
+      </script>
+  @endpush
