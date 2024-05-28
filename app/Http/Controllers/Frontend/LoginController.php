@@ -7,7 +7,7 @@ use App\Http\Requests\LoginPostRequest;
 use Illuminate\Http\Request;
 use App\Models\Account;
 use App\Models\Role;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 class LoginController extends Controller
 {
     public function index(){
@@ -44,5 +44,13 @@ class LoginController extends Controller
 
         
        
+    }
+    public function logout(){
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json(
+            [
+                'message'=>'logout thanh cong'
+            ],200
+        );
     }
 }

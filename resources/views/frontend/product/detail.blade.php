@@ -593,9 +593,12 @@
                let idSize=$('.js-size-product').val().trim();
                if($.isNumeric(idColor) && $.isNumeric(idSize)&& $.isNumeric(qty)){
                     $.ajax({
-                        url:"{{route('frontend.cart.add')}}",
+                        url:"http://127.0.0.1:8000/add-cart",
                         type:"Post",
                         data:{"id":idPd,'idColor':idColor,'idSize':idSize,'qty':qty},
+                        headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                        },
                         beforeSend:function(){
                             $('.js-addcart-detail').text('Processing...');
                         },
@@ -637,17 +640,17 @@
                                 }
                                 $('.header-cart-total').text(" Total: "+result.total)
 
-                            }else{
-                                swal('Message', result.error, "error");
+                            }
+                        },
+                        error: function(xhr) {
+                            if(xhr.status==401|| xhr.status === 404){
+                                window.location.href="http://127.0.0.1:8000/login"
                             }
                         }
                     })
-               }else{
-                swal('Message', "Choose color and size and quantity", "error");
-               }
-            
-               
-               
+                }else{
+                    swal('Message', "Choose color and size and quantity", "error");
+                }
             });
     </script>
     <script>
@@ -672,6 +675,7 @@
                         type:'POST',
                         url:'http://127.0.0.1:8000/createReview',
                         data:formData,
+
                         success: function(data,textStatus,xhr) {
                             if(xhr.status==200){
                                 var starts="";
@@ -697,7 +701,7 @@
                             }
                         },
                         error: function(xhr) {
-                        
+                           
                         }
                     })
                

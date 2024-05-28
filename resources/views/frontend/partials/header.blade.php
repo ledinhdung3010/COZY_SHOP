@@ -207,18 +207,33 @@
     });
     </script>
     <script>
-        $(document).ready(function(){
-            console.log('====================================');
-            console.log('aaa');
-            console.log('====================================');
-          
+        $(document).ready(function(){ 
             if(localStorage.getItem('username')){
                 $('.login').empty();
                 $('.login').append('<p class="flex-c-m trans-04 p-lr-25">'+localStorage.getItem('username')+'</p>\
-                        <a href="#" class="flex-c-m trans-04 p-lr-25">\
+                        <a href="#" class="flex-c-m trans-04 p-lr-25 btn-logout">\
                                     Logout\
                         </a>\
                 ')
+                $('.btn-logout').on('click',function(event){
+                    event.preventDefault();
+                    $.ajax({
+                            url:"http://127.0.0.1:8000/logout",
+                            type:"GET",
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                            },
+                            success:function(data,textStatus,xhr){
+                               if(xhr.status==200){
+                                localStorage.clear();
+                                window.location.href="http://127.0.0.1:8000/login"
+                               }
+                            },
+                            error: function(xhr) {
+                                
+                            }
+                    })
+                })
             }
         })
     </script>

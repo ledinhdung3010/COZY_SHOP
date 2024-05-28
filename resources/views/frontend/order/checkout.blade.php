@@ -123,9 +123,20 @@
     <script>
         // su ly cart
         function getApi(){
-            $.get('http://127.0.0.1:8000/Cart',function(res){
-                    getCart(res.cart,res.total);
-            })
+            $.ajax({
+                    url: 'http://127.0.0.1:8000/Cart',
+                    type: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                    },
+                    success: function(res) {
+                        getCart(res.cart, res.total);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', status, error);
+                    }
+                });
+
         }
         function getCart(product,total){
             $.each(product, function(index, product){
@@ -168,7 +179,7 @@
             $.ajax({
                 type: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
                 },
                 url: '{{route('frontend.order.payment')}}',
                 data: formData,
@@ -195,5 +206,12 @@
                 }
             });
         });
+    </script>
+    <script>
+        $(document).ready(function(){
+            if(!localStorage.getItem('jwt_token')){
+                window.location.href="http://127.0.0.1:8000/login"
+            }
+        })
     </script>
 @endpush

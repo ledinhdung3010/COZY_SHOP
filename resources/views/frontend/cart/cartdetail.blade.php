@@ -180,6 +180,9 @@
                 $.ajax({
                         url:"{{route('frontend.cart.editdetail')}}",
                         type:"Post",
+						headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                        },
                         data:{"id":idPd,"num":num},
                         success:function(result){
                            subtotal.text('$'+result.subtotal)
@@ -208,5 +211,12 @@
             })
         })
     </script>
+	<script>
+		$(document).ready(function(){
+			if(!localStorage.getItem('jwt_token'){
+				
+			})
+		})
+	</script>
     
 @endpush

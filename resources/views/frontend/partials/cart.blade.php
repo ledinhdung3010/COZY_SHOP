@@ -42,7 +42,7 @@
                     <div class="header-cart-total w-full p-tb-40">
                         Total: {{$data['total']}}
                     </div>
-                    <a href="{{route('frontend.order.checkout')}}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10 btn-block">
+                    <a href="#" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10 btn-block btn-checkout">
                         Check Out
                     </a>
                     
@@ -67,6 +67,9 @@
                                 url:"{{route('frontend.cart.delete')}}",
                                 type:"Post",
                                 data:{"id":id},
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                                },  
                                 success:function(result){
                                     $(".header-cart-item[data-id='"+id+"']").remove();
                                     var a=$('.header-cart-item').length;
@@ -80,5 +83,30 @@
                         
                     })
        
+    </script>
+    <script>
+        $('.btn-checkout').on('click',function(event){
+            event.preventDefault();
+            console.log('====================================');
+            console.log(localStorage.getItem('jwt_token'));
+            console.log('====================================');
+                    $.ajax({
+                            url:"http://127.0.0.1:8000/checkout",
+                            type:"GET",
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+                             },
+                            success:function(data,textStatus,xhr){
+                               if(xhr.status==200){
+                                    window.location.href="http://127.0.0.1:8000/checkout/index"
+                               }
+                            },
+                            error: function(xhr) {
+                                if(xhr.status==401){
+                                    window.location.href="http://127.0.0.1:8000/login"
+                                }
+                            }
+                    })
+        })
     </script>
 @endpush

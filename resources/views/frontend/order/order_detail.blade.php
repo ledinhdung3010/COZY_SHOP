@@ -90,7 +90,7 @@
             $.ajax({
                 type: 'GET',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
                 },
                 url: '{{ route('frontend.order_detail') }}',
                 data: {

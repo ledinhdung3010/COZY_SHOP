@@ -19,8 +19,19 @@ class OderController extends FrontendController
 {
     public function checkout(){
         if(Cart::count()==0){
-            return redirect()->route('frontend.home');
+            return response()->json(
+                [
+                    'message'=>'chuwa co san pham nao'
+                ],401
+            );
         }
+        return response()->json(
+            [
+                'message'=>'thanh cong vui long chuyen huong den checkout'
+            ],200
+        );
+    }
+    public function viewCheckout(){
         return view('frontend.order.checkout');
     }
     public function Cart(){
