@@ -62,6 +62,7 @@
                             success:function(data,textStatus,xhr){
                                if(xhr.status==200&&data.role=="user"){
                                 localStorage.setItem('jwt_token', data.access_token);
+                                localStorage.setItem('username', data.user.username);
                                 window.location.href="http://127.0.0.1:8000/home/index?page=1"
                                }
                             },

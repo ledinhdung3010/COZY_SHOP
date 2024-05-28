@@ -412,7 +412,11 @@ class ProductController extends Controller
   public function renderProduct(Request $request){
     $id=$request->id;
     if($id){
-      $comment=Comment::where('productId',$id)->get();
+      $comment=Comment::where('productId',$id)
+            ->join('users', 'comments.userId', '=', 'users.id')
+            ->where('comments.productId', $id)
+            ->select('comments.*', 'users.username')
+            ->get();
       return response()->json(
         [
           'comment'=>$comment

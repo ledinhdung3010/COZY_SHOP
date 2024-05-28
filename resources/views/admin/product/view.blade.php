@@ -69,7 +69,7 @@
                                                              <div class="d-flex justify-content-between align-items-center p-b-17">\
                                                                 <div class="flex-w flex-sb-m p-b-17" id=' + value.id + '>\
                                                                     <h3 class="mtext-107 cl2 p-r-20">\
-                                                                        ' + value.name + '\
+                                                                        ' + value.username + '\
                                                                     </h3>\
                                                                     <span class="fs-18 cl11">\
                                                                         ' + stars + '\
@@ -99,7 +99,7 @@
                                                             <div class="d-flex justify-content-between align-items-center p-b-17">\
                                                                 <div class="flex-w flex-sb-m p-b-17" id=' + value.id + '>\
                                                                     <h3 class="mtext-107 cl2 p-r-20">\
-                                                                        ' + value.name + '\
+                                                                        ' + value.username + '\
                                                                     </h3>\
                                                                     <span class="fs-18 cl11">\
                                                                         ' + stars + '\

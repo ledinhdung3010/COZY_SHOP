@@ -15,8 +15,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Carbon\Carbon;
 class LoginGoogleController extends Controller
 {
-    public function redirectToGoogle()
-    {
+        public function redirectToGoogle()
+        {
         return Socialite::driver('google')->redirect();
     }
     public function handleGoogleCallback()
@@ -61,7 +61,7 @@ class LoginGoogleController extends Controller
             $expiresIn = $tokenResponse['expires_in'];
             $expiry = now()->addSeconds($expiresIn);
             $customClaims = ['exp' => $expiry->timestamp]; // UNIX timestamp của thời điểm hết hạn
-            $accessToken = JWTAuth::claims($customClaims)->fromUser($account);  
+            $accessToken = JWTAuth::claims($customClaims)->fromUser($account);
             return response()->json(
                 [
                     'access_token'=>$accessToken,

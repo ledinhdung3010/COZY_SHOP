@@ -55,7 +55,9 @@
                     window.location.href="http://127.0.0.1:8000/admin/dashboard"
                 },
                 error: function(xhr) {
-                  
+                  console.log('====================================');
+                  console.log('aaa');
+                  console.log('====================================');
                 }
            })
 </script>

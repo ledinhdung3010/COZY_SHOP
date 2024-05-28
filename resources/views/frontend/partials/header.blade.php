@@ -24,9 +24,12 @@
                     <a href="#" class="flex-c-m trans-04 p-lr-25">
                         USD
                     </a>
-                    <a href="#" class="flex-c-m trans-04 p-lr-25">
-                        
-                    </a>
+                    <div class="login right-top-bar flex-w h-full">
+                        <a href="http://127.0.0.1:8000/login" class="flex-c-m trans-04 p-lr-25">
+                            Login
+                        </a>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -202,6 +205,22 @@
             }
         });
     });
+    </script>
+    <script>
+        $(document).ready(function(){
+            console.log('====================================');
+            console.log('aaa');
+            console.log('====================================');
+          
+            if(localStorage.getItem('username')){
+                $('.login').empty();
+                $('.login').append('<p class="flex-c-m trans-04 p-lr-25">'+localStorage.getItem('username')+'</p>\
+                        <a href="#" class="flex-c-m trans-04 p-lr-25">\
+                                    Logout\
+                        </a>\
+                ')
+            }
+        })
     </script>
     
 @endpush

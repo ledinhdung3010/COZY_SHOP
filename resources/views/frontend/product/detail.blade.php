@@ -260,12 +260,6 @@
                                                 <label class="stext-102 cl3" for="review">Your review</label>
                                                 <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="review" name="review"></textarea>
                                             </div>
-                
-                                            <div class="col-sm-6 p-b-5">
-                                                <label class="stext-102 cl3" for="name">Name</label>
-                                                <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name">
-                                            </div>
-                
                                             <div class="col-sm-6 p-b-5">
                                                 <label class="stext-102 cl3" for="email">Email</label>
                                                 <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="text" name="email">
@@ -663,46 +657,54 @@
             })
             $('.btn-review').click(function(event){
                 event.preventDefault();
-                var url = window.location.href;
-                // Create a URL object
-                var urlParams = new URL(url);
-                // Use URLSearchParams to get the id parameter
-                var idPd = urlParams.searchParams.get('id');
-                var formData = $('.form-review').serialize();
-                formData += '&idPd=' + idPd;
-                $.ajax({
-                    type:'POST',
-                    url:'http://127.0.0.1:8000/createReview',
-                    data:formData,
-                    success: function(data,textStatus,xhr) {
-                        if(xhr.status==200){
-                            var starts="";
-                            for(var i=0;i<5;i++){
-                                if(i<data.comment.start){
-                                    starts += '<i class="zmdi zmdi-star"></i>';
-                                }else{
-                                    starts += '<i class="zmdi zmdi-star-outline"></i>';
+                if(localStorage.getItem('username')){
+                    var url = window.location.href;
+                    // Create a URL object
+                    var urlParams = new URL(url);
+                    // Use URLSearchParams to get the id parameter
+                    var idPd = urlParams.searchParams.get('id');
+                    var formData = $('.form-review').serialize();
+                    formData += '&idPd=' + idPd+'&username='+localStorage.getItem('username');
+                    console.log('====================================');
+                    console.log(formData);
+                    console.log('====================================');
+                    $.ajax({
+                        type:'POST',
+                        url:'http://127.0.0.1:8000/createReview',
+                        data:formData,
+                        success: function(data,textStatus,xhr) {
+                            if(xhr.status==200){
+                                var starts="";
+                                for(var i=0;i<5;i++){
+                                    if(i<data.comment.start){
+                                        starts += '<i class="zmdi zmdi-star"></i>';
+                                    }else{
+                                        starts += '<i class="zmdi zmdi-star-outline"></i>';
+                                    }
                                 }
+                                $('.comment-product').append('<div class="flex-w flex-sb-m p-b-17">\
+                                                    <span class="mtext-107 cl2 p-r-20">\
+                                                        '+localStorage.getItem('username')+'\
+                                                    </span>\
+                                                    <span class="fs-18 cl11">\
+                                                        '+starts+'\
+                                                    </span>\
+                                                </div>\
+                                                <p class="stext-102 cl6">\
+                                                    '+data.comment.content+'\
+                                                </p>')
+                                $('.form-review').find('input, textarea, select').val('');
                             }
-                            $('.comment-product').append('<div class="flex-w flex-sb-m p-b-17">\
-                                                <span class="mtext-107 cl2 p-r-20">\
-                                                    '+data.comment.name+'\
-                                                </span>\
-                                                <span class="fs-18 cl11">\
-                                                    '+starts+'\
-                                                </span>\
-                                            </div>\
-                                            <p class="stext-102 cl6">\
-                                                '+data.comment.content+'\
-                                            </p>')
-                            $('.form-review').find('input, textarea, select').val('');
+                        },
+                        error: function(xhr) {
+                        
                         }
-                    },
-                    error: function(xhr) {
-                    
-                    }
-                })
+                    })
                
+                }else{
+                    window.location.href="http://127.0.0.1:8000/login"
+                }
+              
                 
             })
 

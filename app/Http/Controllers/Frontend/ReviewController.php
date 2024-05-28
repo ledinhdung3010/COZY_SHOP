@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -14,12 +15,14 @@ class ReviewController extends Controller
         $start=$request->rating;
         $content=$request->review;
         $idPd=$request->idPd;
+        $username=$request->username;
+        $userId=Account::where('username',$username)->first();
         $data=[
-            'name'=>$name,
             'email'=>$email,
             'start'=>$start,
             'content'=>$content,
             'productId'=>$idPd,
+            'userId'=>$userId->id,
             'status'=>1,
             'created_at'=>date('Y-m-d H:i:s')
         ];
