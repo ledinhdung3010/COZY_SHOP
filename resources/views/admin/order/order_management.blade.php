@@ -41,7 +41,7 @@
                             
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <form action="{{route('admin.order.no_accept',['extrs_code'=>$item->extrs_code])}}" method="post">
+                                <form action="{{route('admin.order.no_accept',['extrs_code'=>$item->extrs_code,'id'=>$item->id])}}" method="post">
                                     @csrf
                                     <div class="modal-dialog">
                                         <div class="modal-content">

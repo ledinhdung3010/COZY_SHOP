@@ -38,7 +38,8 @@
                     </div>
                     <div class="row">
                     <div class="col-6">
-                        <button class="btn btn-primary px-4 btn-submit" type="submit">Login</button>
+                        <button class="btn btn-primary px-4 btn-submit btn-login" type="submit">Login</button>
+                        <button class="btn btn-primary px-4 btn-submit btn-register" type="submit">Register</button>
                     </div>
                     </div>
 
@@ -52,7 +53,7 @@
   @endsection
   @push('javascript')
       <script>
-        $('.btn-submit').click(function(event){
+        $('.btn-login').click(function(event){
             event.preventDefault();
             var formData = $('#inf_login').serialize();
             $.ajax({

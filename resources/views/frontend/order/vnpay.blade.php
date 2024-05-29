@@ -43,6 +43,9 @@
 <script src="{{asset('frontend/vendor/jquery/jquery-3.2.1.min.js')}}"></script>
     <script>
          $(document).ready(function() {
+            console.log('====================================');
+            console.log('aaaa');
+            console.log('====================================');
             var urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('vnp_ResponseCode')) {
                 var responseCode = urlParams.get('vnp_ResponseCode');

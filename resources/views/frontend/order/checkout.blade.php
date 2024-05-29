@@ -175,7 +175,7 @@
             $('.error-message').text('');
             var formData = $('#inf_your').serialize();
             var pay=$('input[name="pay"]:checked').val();
-            formData += '&checkpay=true&payment='+pay;
+            formData += '&checkpay=true&payment='+pay+'&username='+localStorage.getItem('username');
             $.ajax({
                 type: 'POST',
                 headers: {
@@ -185,11 +185,10 @@
                 data: formData,
                 success: function(response) {
                     if(response.data.pay=='code'){
-                        window.location.href = 'http://127.0.0.1:8000/order_detail?extrs_code='+response.data.extrs_code+'&id='+response.data.id;
+                        window.location.href = 'http://127.0.0.1:8000/billDetail?extrs_code='+response.data.extrs_code+'&id='+response.data.id;
                     }else{
                         window.location.href=response.data.url;
                     }
-                    
                 },
                 error: function(xhr) {
                     if (xhr.status == 422) {

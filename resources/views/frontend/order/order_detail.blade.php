@@ -132,17 +132,24 @@
                                     </div>\
                                 </td>\
                                 <td class="column-2"><a href="{{route('frontend.product.detail.view')}}'+'?slug=' + product.category_slug + ''+'&id='+product.id+'">'+product.name+'</a></td>\
-                                <td class="column-3">$ '+product.price+'</td>\
+                                <td class="column-3">$ '+product.price_sell+'</td>\
                                 <td class="column-4">\
                                     '+product.qtyprice+'\
                                 </td>\
                                 <td class="column-5">'+product.color_name+'</td>\
                                 <td class="column-6">'+product.size_name+'</td>\
-                                <td class="column-7">$ '+product.price*product.qtyprice+'</td>\
+                                <td class="column-7">$ '+product.price_sell*product.qtyprice+'</td>\
                             </tr>')
-                count+=product.qtyprice*product.price;
+                count+=product.qtyprice*product.price_sell;
             })
             $('.total_money').append('<h3>TOTAL:'+count+'</h3>')
         }
     </script>
+    <script>
+		$(document).ready(function(){
+			if(!localStorage.getItem('jwt_token')){
+				window.location.href = 'http://127.0.0.1:8000/login';
+			}
+		})
+	</script>
 @endpush

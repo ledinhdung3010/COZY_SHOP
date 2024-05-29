@@ -29,16 +29,17 @@ class OrderController extends Controller
         $extrs_code=$request->extrs_code;
         $id=$request->id;
         $order=Order::where('extrs_code',$extrs_code)->update(['status'=>2]);
-        $quantity=Order_detail::where('order_id',$id)->get();
-        foreach($quantity as $item){
-           $update=Product::where('id',$item->product_id)->decrement('quantity',$item->quantity);
-        }
         return redirect()->route('admin.order');
     }
     public function no_accept(Request $request){
         $extrs_code=$request->extrs_code;
         $content=$request->content;
+        $id=$request->id;
         $order=Order::where('extrs_code',$extrs_code)->update(['status'=>3,'nots'=>$content]);
+        $quantity=Order_detail::where('order_id',$id)->get();
+        foreach($quantity as $item){
+        $update=Product::where('id',$item->product_id)->increment('quantity',$item->quantity);
+        }
         return redirect()->route('admin.order');
 
     }

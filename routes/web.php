@@ -31,8 +31,13 @@ Route::as('frontend.')->group(function(){
     Route::get('productDetail',[ProductController::class,'view'])->name('product.detail.view');
     Route::get('about',[AboutController::class,'index'])->name('about');
     Route::get('blog',[BlogController::class,'index'])->name('blog');
+     // bill detail
+     Route::get('billDetail',[OderController::class,'viewBillDetail'])->name('view.billdetail');
+  
     //checkout
     Route::get('checkout/index',[OderController::class,'viewCheckout'])->name('order.viewCheckout');
+ 
+    Route::get('callBackVnpay',[OderController::class,'callBackVnpay'])->name('view.vnpay');
 });
 Route::as('frontend.')->middleware(['check.user.login'])->group(function(){
     //logout
@@ -47,18 +52,16 @@ Route::as('frontend.')->middleware(['check.user.login'])->group(function(){
     Route::Post('editdetail-cart',[CartController::class,'editdetail'])->name('cart.editdetail');
     //checkout
     Route::get('checkout',[OderController::class,'checkout'])->name('order.checkout');
-
+    //order_detail
+    Route::get('order_detail',[OderController::class,'showorder'])->name('order_detail');
     //show cart
     Route::get('Cart',[OderController::class,'cart'])->name('order.cart');
     //payment
     Route::post('payment',[OderController::class,'payment'])->name('order.payment');
-    //order_detail
-    Route::get('order_detail',[OderController::class,'showorder'])->name('order_detail');
+ 
     //review
     Route::Post('createReview',[ReviewController::class,'createReview'])->name('createReview');
     //vnpay
     Route::get('order_detail_vnpay',[OderController::class,'handleVnPayCallback'])->name('order.order_detail_vnpay');
-    Route::get('callBackVnpay',[OderController::class,'callBackVnpay'])->name('view.vnpay');
-    // bill detail
-    Route::get('billDetail',[OderController::class,'viewBillDetail'])->name('view.billdetail');
+   
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -53,6 +54,9 @@ class OderController extends FrontendController
         $carts = Cart::content();
         $cartTotal = 0;
         $itemCarts = $carts->count();
+        $username=$request->username;
+        $user=Account::where('username',$username)->first();
+        $userId=$user->id;
         foreach ($carts as $cartItem) {
             $priceSell = $cartItem->options->price_sell ?? $cartItem->price; // Fallback to the original price if price_sell is not set
             $cartTotal += $priceSell * $cartItem->qty;
@@ -60,6 +64,7 @@ class OderController extends FrontendController
         $validatedData = $request->validated();
         session()->put('full_name', $request->full_name);
         session()->put('email', $request->email);
+        session()->put('userId', $userId);
         session()->put('phone', $request->phone);
         session()->put('address', $request->address);
         $check=$request->checkpay;
@@ -75,6 +80,7 @@ class OderController extends FrontendController
                     'full_name'=>$request->full_name,
                     'phone'=>$request->phone,
                     'status'=>'1',
+                    'userId'=>$userId,
                     'email'=>$request->email,
                     'nots'=>$request->nots ? $request->nots : null ,
                     'payment'=>1,
@@ -97,20 +103,17 @@ class OderController extends FrontendController
                     ];
                 }
                 $insert=Order_detail::insert($dataProduct);
+                $quantity=Order_detail::where('order_id',$insertOrder)->get();
+                foreach($quantity as $item){
+                $update=Product::where('id',$item->product_id)->decrement('quantity',$item->quantity);
+                }
                 if($insert){
                     Cart::destroy();
                     // sang trang xem lai don hang vua dat
-                    $link = 'http://127.0.0.1:8000/order_detail?extrs_code='.$extrs_code.'&id='.$insertOrder;  // URL hoặc bất kỳ văn bản nào bạn muốn mã hóa
-                    $qrCode = QrCode::size(200)->generate($link);
-                    $temporaryFilePath = storage_path('app/public/qrcodes/qrcode.png');
-                    Storage::disk('public')->put('qrcodes/qrcode.png', $qrCode);
-                    Mail::send('frontend.order.send',['qrCodeFilePath' => $temporaryFilePath], function ($email) use ($emailUser, $fullName, $extrs_code,$temporaryFilePath) {
+                    $link = 'http://127.0.0.1:8000/billDetail?extrs_code='.$extrs_code.'&id='.$insertOrder;  // URL hoặc bất kỳ văn bản nào bạn muốn mã hóa
+                    Mail::send('frontend.order.send',['link' => $link], function ($email) use ($emailUser, $fullName, $extrs_code) {
                         $email->to($emailUser, $fullName); 
                         $email->subject("Bạn đã đặt đơn hàng #$extrs_code");
-                        $email->attach($temporaryFilePath, [
-                            'as' => 'qrcode.png', // Tên file đính kèm
-                            'mime' => 'image/png', // Loại MIME của file
-                        ]);
                     });
                    
                
@@ -192,7 +195,6 @@ class OderController extends FrontendController
                                     'url'=>$vnp_Url,
                                     'pay'=>'vnpay'
                                 ]
-                               
                             ]
                         );
                        
@@ -212,6 +214,7 @@ class OderController extends FrontendController
             $extrs_code=time().Str::random(10);
             $emailUser=session()->get('email');
             $fullName=session()->get('full_name');
+            $userId=session()->get('userId');
             // Kiểm tra trạng thái thanh toán từ VNPAY
             if ($responseCode === '00') {
                 $dataInfo=[
@@ -223,6 +226,7 @@ class OderController extends FrontendController
                     'order_date'=>date('Y-m-d H:i:s'),
                     'address'=>session()->get('address'),
                     'payment'=>2,
+                    'userId'=>$userId,
                     'nots'=>$request->nots,
                     'created_at'=>date('Y-m-d H:i:s')
                 ];
@@ -241,12 +245,15 @@ class OderController extends FrontendController
                     ];
                 }
                 $insert=Order_detail::insert($dataProduct);
+                $quantity=Order_detail::where('order_id',$insert)->get();
+                foreach($quantity as $item){
+                $update=Product::where('id',$item->product_id)->decrement('quantity',$item->quantity);
+                }
                 if($insert){
                     Cart::destroy();
                     
-                    $link = 'http://127.0.0.1:8000/order_detail/'.$extrs_code; // Địa chỉ email của người nhận
-                    $qrCode = QrCode::size(200)->generate($link);
-                    Mail::send('frontend.order.send', compact('link','qrCode'), function ($email) use ($emailUser, $fullName, $extrs_code) {
+                    $link = 'http://127.0.0.1:8000/billDetail?extrs_code='.$extrs_code.'&id='.$insertOrder; // Địa chỉ email của người nhận
+                    Mail::send('frontend.order.send', compact('link'), function ($email) use ($emailUser, $fullName, $extrs_code) {
                         $email->to($emailUser, $fullName);
                         $email->subject("Bạn đã đặt đơn hàng #$extrs_code");
                     });
